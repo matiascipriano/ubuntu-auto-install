@@ -1,0 +1,34 @@
+#cloud-config
+autoinstall:
+  # version is an Autoinstall required field.
+  version: 1
+
+  # This adds the default snaps found on a 22.04 Ubuntu Desktop system.
+  # Any desired additional snaps may also be listed here.
+  snaps:
+    - name: firefox
+    - name: docker
+    - name: telegram-desktop
+    - name: code
+      classic: true
+
+  # User creation can occur in one of 3 ways:
+  # 1. Create a user using this `identity` section.
+  # 2. Create users as documented in cloud-init inside the user-data section,
+  #    which means this single-user identity section may be removed.
+  # 3. Prompt for user configuration on first boot.  Remove this identity
+  #    section and see the "Installation without a default user" section.
+  
+  packages:
+    - vim
+
+  # Subiquity will, by default, configure a partition layout using LVM.
+  # The 'direct' layout method shown here will produce a non-LVM result.
+  storage:
+    layout:
+      name: direct
+
+  late-commands:
+    - curtin in-target -- apt-get install -y openvpn
+    - curtin in-target -- apt-get install -y docker-compose
+    - curtin in-target -- apt-get install -y golang-go
